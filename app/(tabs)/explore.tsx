@@ -8,7 +8,7 @@ import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 // uj jgjhgjhg
 export default function TabTwoScreen() {
-  //testf kjhjhjk fdg
+  //testf  kjkjkjhjhjk fdg
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}

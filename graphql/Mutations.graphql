@@ -1,0 +1,13 @@
+extend type Query {
+  isLoggedIn: Boolean!
+  cartItems: [Launch]!
+}
+
+#graphql\Mutations.graphql
+mutation RequestOtp($otpRequestData: OtpRequestDto!) {
+  requestOtp(otpRequestData: $otpRequestData) {
+    otpGeneratedSuccessfully
+    otp
+    message
+  }
+}

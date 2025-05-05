@@ -1,0 +1,167 @@
+#graphql\PaginatedOrganization.graphql
+query PaginatedMeeting($listInputDto: ListInputDTO!) {
+  paginatedMeeting(ListInputDTO: $listInputDto) {
+    data {
+      id
+      meetingReference
+      projectId
+      createdByUserId
+      meetingVenueId
+      meetingTypeId
+      parentMeetingId
+      title
+      startTime
+      endTime
+      status
+      meetingDate
+      meetingAgenda
+      meetingUrl
+      attendees
+      uploadDoc
+      createdAt
+      updatedAt
+      deletedAt
+    }
+  }
+}
+
+query PaginatedProjects($listInputDto: ListInputDTO!) {
+  paginatedProjects(ListInputDTO: $listInputDto) {
+    data {
+      id
+      name
+      organizationId
+    }
+  }
+}
+
+query GetAllMeetingTypes {
+  getAllMeetingTypes {
+    id
+    name
+  }
+}
+
+query PaginatedMeetingVenue($listInputDto: ListInputDTO!) {
+  paginatedMeetingVenue(ListInputDTO: $listInputDto) {
+    data {
+      id
+      name
+      address
+      contactPerson
+      contactNumber
+      description
+    }
+  }
+}
+
+query PaginatedUsers($listInputDto: ListInputDTO!) {
+  paginatedUsers(ListInputDTO: $listInputDto) {
+    data {
+      name
+      id
+    }
+  }
+}
+
+query PaginatedMeetingType($listInputDto: ListInputDTO!) {
+  paginatedMeetingType(ListInputDTO: $listInputDto) {
+    data {
+      name
+      id
+    }
+  }
+}
+
+mutation DeleteMetingType($ids: [Int!]!) {
+  deleteMetingType(ids: $ids)
+}
+
+query PaginatedNotes($listInputDto: ListInputDTO!) {
+  paginatedNotes(ListInputDTO: $listInputDto) {
+    data {
+      decision
+      id
+      meetingId
+      notes
+    }
+  }
+}
+query GetUpcomingMeetingTask($listInputDto: ListInputDTO!) {
+  getUpcomingMeetingTask(ListInputDTO: $listInputDto) {
+    data {
+      id
+      ownerId
+      assigneeId
+      meetingId
+      notesId
+      projectId
+      parentTaskId
+      task
+      comment
+      openedDate
+      dueDate
+      completedDate
+      priority
+      status
+      completePercent
+      weightType
+    }
+  }
+}
+
+query PaginatedMeetingTask($listInputDto: ListInputDTO!) {
+  paginatedMeetingTask(ListInputDTO: $listInputDto) {
+    data {
+      id
+      ownerId
+      assigneeId
+      meetingId
+      notesId
+      projectId
+      parentTaskId
+      task
+      comment
+      openedDate
+      dueDate
+      completedDate
+      priority
+      status
+      completePercent
+      totalTaskComplete
+      weightType
+    }
+  }
+}
+
+query PaginatedNotePad($listInputDto: ListInputDTO!) {
+  paginatedNotePad(ListInputDTO: $listInputDto) {
+    data {
+      id
+      status
+      notesField
+    }
+  }
+}
+query GetUpcomingMeetings($listInputDto: ListInputDTO!) {
+  getUpcomingMeetings(ListInputDTO: $listInputDto) {
+    data {
+      id
+      meetingReference
+      projectId
+      createdByUserId
+      meetingVenueId
+      meetingTypeId
+      projectName
+      parentMeetingId
+      title
+      startTime
+      endTime
+      status
+      meetingDate
+      meetingAgenda
+      meetingUrl
+      attendees
+    }
+  }
+}

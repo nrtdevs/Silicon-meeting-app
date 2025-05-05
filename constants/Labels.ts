@@ -31,6 +31,12 @@ export const labels = {
   loginInstead:"Login instead",
   sendOtp:"Send OTP",
   home:"Home",
+  meeting : "Meeting",
+  meetingType : "Meeting Type",
+  meetingVenue : "Meeting Venue",
+  myNotes : "My Notes",
+  upcomingTasks : "Upcomimg Tasks",
+  task : "Task",
   organization:"Organization",
   profile:"Profile",
   projects:"Projects",
@@ -73,4 +79,6 @@ export const labels = {
   searchModule:"Search Module",
   searchCoupon:"Search Coupon",
   searchUser:"Search User",
+  title : "Title",
+  upcomingMeeting : "Upcoming Meeting"
 };

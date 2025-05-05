@@ -1,0 +1,184 @@
+extend type Query {
+  isLoggedIn: Boolean!
+  cartItems: [Launch]!
+}
+
+#graphql\Mutations.graphql
+mutation RequestOtp($otpRequestData: OtpRequestDto!) {
+  requestOtp(otpRequestData: $otpRequestData) {
+    otpGeneratedSuccessfully
+    otp
+    message
+  }
+}
+
+mutation Login($loginData: ValidateDto!) {
+  login(loginData: $loginData) {
+    user {
+      id
+      name
+      username
+      mobileNo
+      email
+      status
+      avatar
+      parentId
+      createdAt
+      updatedAt
+      deletedAt
+    }
+    accessToken
+  }
+}
+mutation DeleteMeting($ids: [Int!]!) {
+  deleteMeting(ids: $ids)
+}
+
+mutation CreateMeetingType($data: CreateMeetingTypeDto!) {
+  createMeetingType(data: $data) {
+    id
+    name
+  }
+}
+
+mutation UpdateMeetingType($updateMeetingTypeInput: UpdateMeetingTypeDto!) {
+  updateMeetingType(updateMeetingTypeInput: $updateMeetingTypeInput) {
+    id
+    name
+  }
+}
+
+mutation DeleteMetingVenue($ids: [Int!]!) {
+  deleteMetingVenue(ids: $ids)
+}
+
+mutation CreateMeetingVenue($data: CreateMeetingVenueDto!) {
+  createMeetingVenue(data: $data) {
+    id
+    name
+    address
+    contactPerson
+    contactNumber
+    description
+    createdAt
+  }
+}
+mutation UpdateMeetingVenue($updateMeetingVenueInput: UpdateMeetingVenueDto!) {
+  updateMeetingVenue(updateMeetingVenueInput: $updateMeetingVenueInput) {
+    id
+    name
+    address
+    contactPerson
+    contactNumber
+    description
+  }
+}
+
+mutation CreateMeeting($data: CreateMeetingDto!) {
+  createMeeting(data: $data) {
+    id
+    meetingReference
+    projectId
+    createdByUserId
+    meetingVenueId
+    meetingTypeId
+    parentMeetingId
+    title
+    startTime
+    endTime
+    status
+    meetingDate
+    meetingAgenda
+    meetingUrl
+    attendees
+    uploadDoc
+  }
+}
+mutation UpdateMeeting($updateMeetingInput: UpdateMeetingDto!) {
+  updateMeeting(updateMeetingInput: $updateMeetingInput) {
+    id
+    meetingReference
+    projectId
+    createdByUserId
+    meetingVenueId
+    meetingTypeId
+    parentMeetingId
+    title
+    startTime
+    endTime
+    status
+    meetingDate
+    meetingAgenda
+    meetingUrl
+    attendees
+    uploadDoc
+  }
+}
+
+mutation DeleteNotes($ids: [Int!]!) {
+  deleteNotes(ids: $ids)
+}
+
+mutation CreateNotes($notesData: [CreateNotesDto!]!) {
+  createNotes(notesData: $notesData) {
+    id
+    meetingId
+    decision
+    notes
+    uploadDoc
+  }
+}
+
+mutation DeleteMetingTask($ids: [Int!]!) {
+  deleteMetingTask(ids: $ids)
+}
+mutation CreateMeetingTask($input: CreateMeetingTaskDto!) {
+  createMeetingTask(input: $input) {
+    id
+    ownerId
+    assigneeId
+    meetingId
+    notesId
+    projectId
+    parentTaskId
+    task
+    comment
+    openedDate
+    dueDate
+    completedDate
+    priority
+    status
+    completePercent
+    totalTaskComplete
+    weightType
+  }
+}
+
+mutation DeleteMetingTask($ids: [Int!]!) {
+  deleteMetingTask(ids: $ids)
+}
+
+mutation CreateFollowUp($data: CreateFollowUpDto!) {
+  createFollowUp(data: $data) {
+    body
+    id
+    subject
+  }
+}
+mutation CreateNotePad($notesData: CreateNotePadDto!) {
+  createNotePad(notesData: $notesData) {
+    id
+    notesField
+    status
+  }
+}
+mutation DeleteNotePad($ids: [Int!]!) {
+  deleteNotePad(ids: $ids)
+}
+mutation UpdateNotePad($updateNotesInput: UpdateNotePadDto!) {
+  updateNotePad(updateNotesInput: $updateNotesInput) {
+    id
+    notesField
+    status
+  }
+}

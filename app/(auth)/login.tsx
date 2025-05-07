@@ -10,9 +10,7 @@ import { useTheme } from "@/context/ThemeContext";
 import { Ionicons } from "@expo/vector-icons";
 import { labels } from "@/constants/Labels";
 import CustomValidation from "@/components/CustomValidation";
-import asyncKeys from "@/constants/asyncKeys";
 import CustomButton from "@/components/CustomButton";
-import alertMsg from "@/constants/alertMsg";
 import { useMutation } from "@apollo/client";
 import { RequestOtpDocument } from "@/graphql/generated";
 

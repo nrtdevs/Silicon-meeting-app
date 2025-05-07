@@ -14,8 +14,9 @@ import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { Entypo, Feather, Fontisto, MaterialIcons } from "@expo/vector-icons";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Alert, FlatList, Modal, Pressable, ScrollView, View } from "react-native";
+import { Alert, FlatList, Modal, Pressable, ScrollView, View, Button, Image } from "react-native";
 import { ms, s, ScaledSheet, vs } from "react-native-size-matters";
+import * as ImagePicker from 'expo-image-picker';
 
 const UpcomingMeeting = () => {
     const { theme } = useTheme();
@@ -49,6 +50,7 @@ const UpcomingMeeting = () => {
     /// view meeting details
     const [isViewModalVisible, setViewModalVisible] = useState(false);
     const [selectedMeeting, setSelectedMeeting] = useState<any>(null);
+    const [isNotesModalVisible, setNotesModalVisible] = useState(false);
     /// Create and Edit meeting modal
     const [isAddEditModalVisible, setAddEditModalVisible] = useState(false);
     const [addEditManage, setAddEditManage] = useState(false);
@@ -119,6 +121,30 @@ const UpcomingMeeting = () => {
             value: item.id,
         }));
     }, [attendeesData]);
+
+    /// image picker
+    const [image, setImage] = useState(null);
+
+    const pickImage = async () => {
+        // Ask for permission
+        const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (permissionResult.granted === false) {
+            alert("Permission to access camera roll is required!");
+            return;
+        }
+
+        // Pick the image
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+        });
+
+        if (!result.canceled) {
+            setImage(result.assets[0].uri);
+        }
+    };
     return (
         <CustomHeader>
             <ThemedView style={styles.contentContainer}>
@@ -134,11 +160,13 @@ const UpcomingMeeting = () => {
                     </View>
                     <Pressable
                         onPress={() => {
-
+                            setAddEditManage(true);
+                            setAddEditModalVisible(true);
                         }}>
                         <Feather name="plus-square" size={24} color={Colors[theme].text} />
                     </Pressable>
                 </View>
+
                 <FlatList
                     data={filteredData}
                     renderItem={({ item }) => (
@@ -162,7 +190,8 @@ const UpcomingMeeting = () => {
                                             size={ms(20)}
                                             color={Colors[theme].text}
                                             onPress={() => {
-
+                                                setAddEditManage(true);
+                                                setAddEditModalVisible(true);
                                             }}
                                         />
                                         <View style={{ width: 5 }}></View>
@@ -187,7 +216,6 @@ const UpcomingMeeting = () => {
                                                         { text: "No", onPress: () => { } },
                                                     ]
                                                 );
-
                                             }}
                                         />
                                     </View>
@@ -204,6 +232,7 @@ const UpcomingMeeting = () => {
                                     </View>
                                     <Pressable
                                         onPress={() => {
+                                            setNotesModalVisible(true);
                                         }}>
                                         <Feather name="plus-square" size={24} color={Colors[theme].text} />
                                     </Pressable>
@@ -490,6 +519,12 @@ const UpcomingMeeting = () => {
                                     },
                                 }}
                             />
+
+
+                            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center',margin : 10 }}>
+                                <Button title="Pick an image from gallery" onPress={pickImage} />
+                                {image && <Image source={{ uri: image }} style={{ width: 200, height: 200, marginTop: 20 }} />}
+                            </View>
                             <CustomButton
                                 title="Submit"
                                 onPress={() => {
@@ -503,6 +538,80 @@ const UpcomingMeeting = () => {
                         </View>
                     </View>
                 </ScrollView>
+            </Modal>
+            {/* Add notes modal */}
+            <Modal
+                animationType="fade"
+                transparent={true}
+                visible={isNotesModalVisible}
+            >
+                <View
+                    style={{
+                        flex: 1,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        backgroundColor: 'rgba(0,0,0,0.5)',
+                    }}
+                >
+                    <View
+                        style={{
+                            backgroundColor: Colors[theme].cartBg,
+                            height: vs(330),
+                            width: s(300),
+                            borderRadius: 10,
+                            padding: 10,
+                        }}
+                    >
+                        <View
+                            style={{
+                                flexDirection: "row",
+                                justifyContent: "space-between",
+                                padding: 10,
+                            }}
+                        >
+                            <ThemedText type="subtitle">Create</ThemedText>
+                            <Pressable onPress={() => setNotesModalVisible(false)}>
+                                <Entypo
+                                    name="cross"
+                                    size={ms(20)}
+                                    color={Colors[theme].text}
+                                />
+                            </Pressable>
+                        </View>
+                        <View style={{ padding: 10 }}>
+                            <CustomValidation
+                                type="input"
+                                control={control}
+                                labelStyle={styles.label}
+                                name={"notes"}
+                                inputStyle={[{ lineHeight: ms(20) }]}
+                                label="Notes"
+                                rules={{ required: "enter notes" }}
+                                autoCapitalize="none"
+                            />
+                            <CustomValidation
+                                type="input"
+                                control={control}
+                                labelStyle={styles.label}
+                                name={"decision"}
+                                inputStyle={[{ lineHeight: ms(20) }]}
+                                label="Decision"
+                                rules={{ required: "enter decision" }}
+                                autoCapitalize="none"
+                            />
+                            <CustomButton
+                                title="Submit"
+                                onPress={() => {
+                                    //handleSubmit(onSubmitNotes)();
+                                }}
+                                style={{
+                                    backgroundColor: Colors[theme].background,
+                                    marginTop: vs(20),
+                                }}
+                            />
+                        </View>
+                    </View>
+                </View>
             </Modal>
         </CustomHeader>
     )

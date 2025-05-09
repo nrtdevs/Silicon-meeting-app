@@ -42,7 +42,7 @@ const UpcommingTask = () => {
         });
     }, [])
 
-    /// fetch project data
+    /// fetch project datac
     const { data: projectData, loading: packageLoading, error: packageError, } = useQuery(PaginatedProjectsDocument, {
         variables: {
             "listInputDto": {
@@ -130,13 +130,13 @@ const UpcommingTask = () => {
         //             }
         //         },
         //     }) :
-            // createNotesMeeting({
-            //     variables: {
-            //         notesData: {
-            //             ...param
-            //         },
-            //     },
-            // });
+        // createNotesMeeting({
+        //     variables: {
+        //         notesData: {
+        //             ...param
+        //         },
+        //     },
+        // });
     };
     return (
         <CustomHeader>

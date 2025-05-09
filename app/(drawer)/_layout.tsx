@@ -22,6 +22,13 @@ const CustomDrawerContent = (props: any) => {
       />
       <DrawerItem
         icon={({ color, size }) => <MaterialIcons name="meeting-room" size={ms(24)} color={Colors[theme].text} />}
+        label={labels?.upcomingMeeting}
+        labelStyle={{ color: Colors[theme].text, fontWeight: 'semibold', fontSize: ms(18) }}
+        onPress={() => router.push('/(drawer)/upcomingMeeting')}
+      />
+
+      <DrawerItem
+        icon={({ color, size }) => <MaterialIcons name="meeting-room" size={ms(24)} color={Colors[theme].text} />}
         label={labels?.meetingType}
         labelStyle={{ color: Colors[theme].text, fontWeight: 'semibold', fontSize: ms(18) }}
         onPress={() => router.push('/(drawer)/meetingType')}
@@ -35,31 +42,23 @@ const CustomDrawerContent = (props: any) => {
       />
 
       <DrawerItem
-        icon={({ color, size }) => <MaterialIcons name="note" size={ms(24)} color={Colors[theme].text} />}
+        icon={({ color, size }) => <MaterialIcons name="note-alt" size={ms(24)} color={Colors[theme].text} />}
         label={labels?.myNotes}
         labelStyle={{ color: Colors[theme].text, fontWeight: 'semibold', fontSize: ms(18) }}
         onPress={() => router.push('/(drawer)/myNotes')}
       />
 
       <DrawerItem
-        icon={({ color, size }) => <MaterialIcons name="note" size={ms(24)} color={Colors[theme].text} />}
-        label={labels?.upcomingTasks}
-        labelStyle={{ color: Colors[theme].text, fontWeight: 'semibold', fontSize: ms(18) }}
-        onPress={() => router.push('/(drawer)/upcommingTask')}
-      />
-
-      <DrawerItem
-        icon={({ color, size }) => <MaterialIcons name="note" size={ms(24)} color={Colors[theme].text} />}
+        icon={({ color, size }) => <MaterialIcons name="task" size={ms(24)} color={Colors[theme].text} />}
         label={labels?.task}
         labelStyle={{ color: Colors[theme].text, fontWeight: 'semibold', fontSize: ms(18) }}
         onPress={() => router.push('/(drawer)/tasks')}
       />
-      
       <DrawerItem
-      icon={({color, size}) => <MaterialIcons name="note" size={ms(24)} color={Colors[theme].text} />}
-      label={labels?.upcomingMeeting}
-      labelStyle={{ color: Colors[theme].text, fontWeight: 'semibold', fontSize: ms(18) }}
-      onPress={() => router.push('/(drawer)/upcomingMeeting')}
+        icon={({ color, size }) => <MaterialIcons name="task" size={ms(24)} color={Colors[theme].text} />}
+        label={labels?.upcomingTasks}
+        labelStyle={{ color: Colors[theme].text, fontWeight: 'semibold', fontSize: ms(18) }}
+        onPress={() => router.push('/(drawer)/upcommingTask')}
       />
 
     </DrawerContentScrollView>

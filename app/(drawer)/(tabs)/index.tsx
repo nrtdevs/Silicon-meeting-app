@@ -14,10 +14,18 @@ import { DrawerActions } from "@react-navigation/native";
 import { useNavigation } from "expo-router/build/useNavigation";
 import { ScrollView } from "react-native-gesture-handler";
 import { ThemedText } from "@/components/ThemedText";
+import { useQuery } from "@apollo/client";
+import { GetMeetingDashboardDocument } from "@/graphql/generated";
 
 const index = () => {
   const { theme } = useTheme();
   const navigation = useNavigation();
+  const { loading, error, data } = useQuery(GetMeetingDashboardDocument, {
+    variables: { filters: {} },
+  });
+  if (loading) return <ThemedText>Loading...</ThemedText>;
+  if (error) return <ThemedText>Error: {error.message}</ThemedText>;
+  const userCount = data?.getMeetingDashboard || {};
   return (
     <CustomHeader>
       <ThemedView style={{ paddingTop: 0 }}>
@@ -41,80 +49,62 @@ const index = () => {
 
           <View style={[styles.cardStyle, { backgroundColor: Colors[theme].cartBg }]}>
             <View style={{ flexDirection: "row", justifyContent: 'space-between' }}>
-              <ThemedText style={styles.cardTitle}>Meeting</ThemedText>
+              <ThemedText style={styles.cardTitle}>Active Meetings</ThemedText>
               <View style={{ borderRadius: 10, borderColor: "grey", borderWidth: 0.5, paddingHorizontal: 10 }}>
                 <ThemedText style={styles.cardHeading}>+ 10%</ThemedText>
               </View>
             </View>
-            <View style={{ flexDirection: "row" }}>
-              <ThemedText style={styles.cardSub}>Trending up this month </ThemedText>
-              <MaterialIcons name="show-chart"  size={24} />
-            </View>
+            <ThemedText style={styles.cardSub}>{userCount.activeMeetings}</ThemedText>
           </View>
 
           <View style={[styles.cardStyle, { backgroundColor: Colors[theme].cartBg }]}>
             <View style={{ flexDirection: "row", justifyContent: 'space-between' }}>
-              <ThemedText style={styles.cardTitle}>Task</ThemedText>
+              <ThemedText style={styles.cardTitle}>Total Meetings</ThemedText>
               <View style={{ borderRadius: 10, borderColor: "grey", borderWidth: 0.5, paddingHorizontal: 10 }}>
                 <ThemedText style={styles.cardHeading}>- 20%</ThemedText>
               </View>
             </View>
-            <View style={{ flexDirection: "row" }}>
-              <ThemedText style={styles.cardSub}>Down 20% this period </ThemedText>
-              <MaterialIcons name="show-chart"  size={24} />
-            </View>
+            <ThemedText style={styles.cardSub}>{userCount.totalMeetings}</ThemedText>
           </View>
 
           <View style={[styles.cardStyle, { backgroundColor: Colors[theme].cartBg }]}>
             <View style={{ flexDirection: "row", justifyContent: 'space-between' }}>
-              <ThemedText style={styles.cardTitle}>Meeting Type</ThemedText>
+              <ThemedText style={styles.cardTitle}>Today Meetings</ThemedText>
               <View style={{ borderRadius: 10, borderColor: "grey", borderWidth: 0.5, paddingHorizontal: 10 }}>
                 <ThemedText style={styles.cardHeading}>- 20%</ThemedText>
               </View>
             </View>
-            <View style={{ flexDirection: "row" }}>
-              <ThemedText style={styles.cardSub}>Strong user retention </ThemedText>
-              <MaterialIcons name="show-chart"  size={24} />
-            </View>
+            <ThemedText style={styles.cardSub}>{userCount.todayMeeting}</ThemedText>
           </View>
 
           <View style={[styles.cardStyle, { backgroundColor: Colors[theme].cartBg }]}>
             <View style={{ flexDirection: "row", justifyContent: 'space-between' }}>
-              <ThemedText style={styles.cardTitle}>Meeting Venue</ThemedText>
+              <ThemedText style={styles.cardTitle}>Upcoming Meeting</ThemedText>
               <View style={{ borderRadius: 10, borderColor: "grey", borderWidth: 0.5, paddingHorizontal: 10 }}>
                 <ThemedText style={styles.cardHeading}>- 20%</ThemedText>
               </View>
             </View>
-            <View style={{ flexDirection: "row" }}>
-              <ThemedText style={styles.cardSub}>Strong user retention </ThemedText>
-              <MaterialIcons name="show-chart"  size={24} />
-            </View>
+            <ThemedText style={styles.cardSub}>{userCount.upComingMeeting}</ThemedText>
           </View>
 
           <View style={[styles.cardStyle, { backgroundColor: Colors[theme].cartBg }]}>
             <View style={{ flexDirection: "row", justifyContent: 'space-between' }}>
-              <ThemedText style={styles.cardTitle}>Organization</ThemedText>
+              <ThemedText style={styles.cardTitle}>Complete Meetings</ThemedText>
               <View style={{ borderRadius: 10, borderColor: "grey", borderWidth: 0.5, paddingHorizontal: 10 }}>
                 <ThemedText style={styles.cardHeading}>- 20%</ThemedText>
               </View>
             </View>
-            <View style={{ flexDirection: "row" }}>
-              <ThemedText style={styles.cardSub}>Strong user retention </ThemedText>
-              <MaterialIcons name="show-chart"  size={24} />
-            </View>
+            <ThemedText style={styles.cardSub}>{userCount.completedMeeting}</ThemedText>
           </View>
 
           <View style={[styles.cardStyle, { backgroundColor: Colors[theme].cartBg }]}>
             <View style={{ flexDirection: "row", justifyContent: 'space-between' }}>
-              <ThemedText style={styles.cardTitle}>Assigned Permission</ThemedText>
+              <ThemedText style={styles.cardTitle}>Inactive Meetings</ThemedText>
               <View style={{ borderRadius: 10, borderColor: "grey", borderWidth: 0.5, paddingHorizontal: 10 }}>
                 <ThemedText style={styles.cardHeading}>- 20%</ThemedText>
               </View>
             </View>
-            <View style={{ flexDirection: "row" }}>
-              <ThemedText style={styles.cardSub}>Strong user retention </ThemedText>
-              <MaterialIcons name="show-chart" color="#000" size={24} />
-            </View>
+            <ThemedText style={styles.cardSub}>{userCount.inactiveMeetings}</ThemedText>
           </View>
         </ScrollView>
       </ThemedView>
@@ -126,7 +116,7 @@ const styles = ScaledSheet.create({
   appBar: {
     fontSize: "18@ms",
     fontWeight: "500",
-    
+
   },
   cardStyle: {
     backgroundColor: "#C9C9C9",
@@ -145,7 +135,7 @@ const styles = ScaledSheet.create({
   },
   cardHeading: {
     fontSize: "14@ms",
-    
+
     fontWeight: "normal"
   },
 });

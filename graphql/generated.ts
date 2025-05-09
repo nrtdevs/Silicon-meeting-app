@@ -21,9 +21,11 @@ export type Scalars = {
 export type About = {
   __typename?: 'About';
   content?: Maybe<Scalars['String']['output']>;
+  contentJson?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   imageUrl?: Maybe<Scalars['String']['output']>;
+  slug: Scalars['String']['output'];
   title: Scalars['String']['output'];
 };
 
@@ -154,6 +156,14 @@ export enum CouponStatus {
 export type CouponStatusDto = {
   ids: Array<Scalars['Float']['input']>;
   status: CouponStatus;
+};
+
+export type CreateAboutDto = {
+  content: Scalars['String']['input'];
+  contentJson: Scalars['String']['input'];
+  description: Scalars['String']['input'];
+  imageUrl: Scalars['String']['input'];
+  title: Scalars['String']['input'];
 };
 
 export type CreateBreakdownDto = {
@@ -644,9 +654,9 @@ export type Mutation = {
   changeUserStatus: UserUnion;
   changeVehicleExpenseStatus: VehicleExpenseStatus;
   changeWarehouseStatus: Warehouse;
-  createAbout: About;
   createBreakdown: Breakdown;
   createCoupon: Coupon;
+  createDynamicPage: About;
   createFollowUp: FollowUp;
   createMeeting: Meeting;
   createMeetingTask: MeetingTask;
@@ -670,9 +680,9 @@ export type Mutation = {
   createVehicle: Vehicle;
   createVehicleExpense: VehicleExpense;
   createWarehouse: Warehouse;
-  deleteAbout: Scalars['Boolean']['output'];
   deleteBreakdown: Scalars['Boolean']['output'];
   deleteCoupon: Scalars['Boolean']['output'];
+  deleteDynamicPage: Scalars['Boolean']['output'];
   deleteFollowUp: Scalars['Boolean']['output'];
   deleteMeting: Scalars['Boolean']['output'];
   deleteMetingTask: Scalars['Boolean']['output'];
@@ -744,9 +754,9 @@ export type Mutation = {
   restoreVehicleExpense: Scalars['Boolean']['output'];
   restoreWarehouse: Scalars['Boolean']['output'];
   sendRegistrationOtp: OtpRes;
-  updateAbout: About;
   updateBreakdown: Breakdown;
   updateCoupon: Coupon;
+  updateDynamicPage: About;
   updateFollowUp: FollowUp;
   updateMeeting: Meeting;
   updateMeetingTask: MeetingTask;
@@ -877,6 +887,11 @@ export type MutationCreateCouponArgs = {
 };
 
 
+export type MutationCreateDynamicPageArgs = {
+  data: CreateAboutDto;
+};
+
+
 export type MutationCreateFollowUpArgs = {
   data: CreateFollowUpDto;
 };
@@ -999,6 +1014,11 @@ export type MutationDeleteBreakdownArgs = {
 
 
 export type MutationDeleteCouponArgs = {
+  ids: Array<Scalars['Int']['input']>;
+};
+
+
+export type MutationDeleteDynamicPageArgs = {
   ids: Array<Scalars['Int']['input']>;
 };
 
@@ -1364,6 +1384,11 @@ export type MutationUpdateCouponArgs = {
 };
 
 
+export type MutationUpdateDynamicPageArgs = {
+  data: UpdateAboutDto;
+};
+
+
 export type MutationUpdateFollowUpArgs = {
   updateFollowUpInput: UpdateFollowUpDto;
 };
@@ -1612,6 +1637,12 @@ export type PackageStatusDto = {
 };
 
 export type PackageUnion = Package | PackageArray;
+
+export type PaginatedAbout = {
+  __typename?: 'PaginatedAbout';
+  data: Array<About>;
+  meta: Meta;
+};
 
 export type PaginatedApplicationModules = {
   __typename?: 'PaginatedApplicationModules';
@@ -1872,12 +1903,12 @@ export type Query = {
   findVehicleById: Vehicle;
   findVehicleExpenseById: VehicleExpense;
   findWarehouseById: Warehouse;
-  getAboutById: About;
-  getAllAbout: Array<About>;
+  getAllDynamicPage: PaginatedAbout;
   getAllMeetingTypes: Array<MeetingType>;
   getAllNotePad: Array<NotePad>;
   getBreakdownStatuses: Array<BreakdownStatus>;
   getBreakdownTypeSuggestions: Array<Scalars['JSON']['output']>;
+  getDynamicPageById: About;
   getFollowUpById: FollowUp;
   getMeetingDashboard: Dashboard;
   getMeetingId: Meeting;
@@ -2093,6 +2124,11 @@ export type QueryFindWarehouseByIdArgs = {
 };
 
 
+export type QueryGetAllDynamicPageArgs = {
+  ListInputDTO: ListInputDto;
+};
+
+
 export type QueryGetBreakdownStatusesArgs = {
   breakdownId: Scalars['Int']['input'];
 };
@@ -2100,6 +2136,11 @@ export type QueryGetBreakdownStatusesArgs = {
 
 export type QueryGetBreakdownTypeSuggestionsArgs = {
   search?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryGetDynamicPageByIdArgs = {
+  id: Scalars['Float']['input'];
 };
 
 
@@ -2534,6 +2575,15 @@ export enum UnitType {
   Volume = 'volume',
   Weight = 'weight'
 }
+
+export type UpdateAboutDto = {
+  content: Scalars['String']['input'];
+  contentJson: Scalars['String']['input'];
+  description: Scalars['String']['input'];
+  id: Scalars['Float']['input'];
+  imageUrl: Scalars['String']['input'];
+  title: Scalars['String']['input'];
+};
 
 export type UpdateBreakdownDto = {
   breakdownDate: Scalars['String']['input'];
@@ -3167,6 +3217,13 @@ export type GetUpcomingMeetingsQueryVariables = Exact<{
 
 export type GetUpcomingMeetingsQuery = { __typename?: 'Query', getUpcomingMeetings: { __typename?: 'PaginatedMeeting', data: Array<{ __typename?: 'Meeting', id: string, meetingReference: string, projectId?: number | null, createdByUserId: string, meetingVenueId?: number | null, meetingTypeId: number, projectName?: string | null, parentMeetingId?: number | null, title: string, startTime: string, endTime: string, status: string, meetingDate: any, meetingAgenda?: string | null, meetingUrl?: string | null, attendees?: Array<number> | null }> } };
 
+export type GetMeetingDashboardQueryVariables = Exact<{
+  filters?: InputMaybe<DashboardFilters>;
+}>;
+
+
+export type GetMeetingDashboardQuery = { __typename?: 'Query', getMeetingDashboard: { __typename?: 'Dashboard', totalMeetings?: number | null, activeMeetings?: number | null, inactiveMeetings?: number | null, upComingMeeting?: number | null, completedMeeting?: number | null, todayMeeting?: number | null } };
+
 
 export const RequestOtpDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RequestOtp"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"otpRequestData"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"OtpRequestDto"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"requestOtp"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"otpRequestData"},"value":{"kind":"Variable","name":{"kind":"Name","value":"otpRequestData"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"otpGeneratedSuccessfully"}},{"kind":"Field","name":{"kind":"Name","value":"otp"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]} as unknown as DocumentNode<RequestOtpMutation, RequestOtpMutationVariables>;
 export const LoginDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"Login"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"loginData"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ValidateDto"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"login"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"loginData"},"value":{"kind":"Variable","name":{"kind":"Name","value":"loginData"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"mobileNo"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}},{"kind":"Field","name":{"kind":"Name","value":"parentId"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"deletedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"accessToken"}}]}}]}}]} as unknown as DocumentNode<LoginMutation, LoginMutationVariables>;
@@ -3198,3 +3255,4 @@ export const GetUpcomingMeetingTaskDocument = {"kind":"Document","definitions":[
 export const PaginatedMeetingTaskDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"PaginatedMeetingTask"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"listInputDto"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ListInputDTO"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"paginatedMeetingTask"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"ListInputDTO"},"value":{"kind":"Variable","name":{"kind":"Name","value":"listInputDto"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"data"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"ownerId"}},{"kind":"Field","name":{"kind":"Name","value":"assigneeId"}},{"kind":"Field","name":{"kind":"Name","value":"meetingId"}},{"kind":"Field","name":{"kind":"Name","value":"notesId"}},{"kind":"Field","name":{"kind":"Name","value":"projectId"}},{"kind":"Field","name":{"kind":"Name","value":"parentTaskId"}},{"kind":"Field","name":{"kind":"Name","value":"task"}},{"kind":"Field","name":{"kind":"Name","value":"comment"}},{"kind":"Field","name":{"kind":"Name","value":"openedDate"}},{"kind":"Field","name":{"kind":"Name","value":"dueDate"}},{"kind":"Field","name":{"kind":"Name","value":"completedDate"}},{"kind":"Field","name":{"kind":"Name","value":"priority"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"completePercent"}},{"kind":"Field","name":{"kind":"Name","value":"totalTaskComplete"}},{"kind":"Field","name":{"kind":"Name","value":"weightType"}}]}}]}}]}}]} as unknown as DocumentNode<PaginatedMeetingTaskQuery, PaginatedMeetingTaskQueryVariables>;
 export const PaginatedNotePadDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"PaginatedNotePad"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"listInputDto"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ListInputDTO"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"paginatedNotePad"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"ListInputDTO"},"value":{"kind":"Variable","name":{"kind":"Name","value":"listInputDto"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"data"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"notesField"}}]}}]}}]}}]} as unknown as DocumentNode<PaginatedNotePadQuery, PaginatedNotePadQueryVariables>;
 export const GetUpcomingMeetingsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetUpcomingMeetings"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"listInputDto"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ListInputDTO"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getUpcomingMeetings"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"ListInputDTO"},"value":{"kind":"Variable","name":{"kind":"Name","value":"listInputDto"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"data"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"meetingReference"}},{"kind":"Field","name":{"kind":"Name","value":"projectId"}},{"kind":"Field","name":{"kind":"Name","value":"createdByUserId"}},{"kind":"Field","name":{"kind":"Name","value":"meetingVenueId"}},{"kind":"Field","name":{"kind":"Name","value":"meetingTypeId"}},{"kind":"Field","name":{"kind":"Name","value":"projectName"}},{"kind":"Field","name":{"kind":"Name","value":"parentMeetingId"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"startTime"}},{"kind":"Field","name":{"kind":"Name","value":"endTime"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"meetingDate"}},{"kind":"Field","name":{"kind":"Name","value":"meetingAgenda"}},{"kind":"Field","name":{"kind":"Name","value":"meetingUrl"}},{"kind":"Field","name":{"kind":"Name","value":"attendees"}}]}}]}}]}}]} as unknown as DocumentNode<GetUpcomingMeetingsQuery, GetUpcomingMeetingsQueryVariables>;
+export const GetMeetingDashboardDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetMeetingDashboard"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filters"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"DashboardFilters"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getMeetingDashboard"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filters"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filters"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"totalMeetings"}},{"kind":"Field","name":{"kind":"Name","value":"activeMeetings"}},{"kind":"Field","name":{"kind":"Name","value":"inactiveMeetings"}},{"kind":"Field","name":{"kind":"Name","value":"upComingMeeting"}},{"kind":"Field","name":{"kind":"Name","value":"completedMeeting"}},{"kind":"Field","name":{"kind":"Name","value":"todayMeeting"}}]}}]}}]} as unknown as DocumentNode<GetMeetingDashboardQuery, GetMeetingDashboardQueryVariables>;

@@ -8,7 +8,7 @@ import { ThemedView } from "@/components/ThemedView"
 import { Colors } from "@/constants/Colors";
 import { labels } from "@/constants/Labels";
 import { useTheme } from "@/context/ThemeContext";
-import { DeleteMetingDocument, GetAllMeetingTypesDocument, GetUpcomingMeetingsDocument, PaginatedMeetingVenueDocument, PaginatedProjectsDocument, PaginatedUsersDocument } from "@/graphql/generated";
+import { CreateMeetingDocument, DeleteMetingDocument, GetAllMeetingTypesDocument, GetUpcomingMeetingsDocument, PaginatedMeetingVenueDocument, PaginatedProjectsDocument, PaginatedUsersDocument, UpdateMeetingDocument } from "@/graphql/generated";
 import { getDateTimePickerProps } from "@/utils/getDateTimePickerProps";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { Entypo, Feather, Fontisto, MaterialIcons } from "@expo/vector-icons";
@@ -17,6 +17,21 @@ import { useForm } from "react-hook-form";
 import { Alert, FlatList, Modal, Pressable, ScrollView, View, Button, Image } from "react-native";
 import { ms, s, ScaledSheet, vs } from "react-native-size-matters";
 import * as ImagePicker from 'expo-image-picker';
+
+const defaultValue = {
+    endTime: '',
+    id: '',
+    meetingAgenda: '',
+    meetingDate: '',
+    meetingReference: '',
+    meetingTypeId: '',
+    meetingUrl: '',
+    meetingVenueId: '',
+    parentMeetingId: '',
+    projectId: '',
+    startTime: '',
+    title: ''
+}
 
 const UpcomingMeeting = () => {
     const { theme } = useTheme();
@@ -63,6 +78,98 @@ const UpcomingMeeting = () => {
     const [dateTimePickerProps, setDateTimePickerProps] = useState<any>(
         getDateTimePickerProps(false)
     );
+    const [currentMeeting, setCurrentMeeting] = useState<{
+        id: string;
+        endTime: string;
+        meetingAgenda: string;
+        meetingDate: string;
+        meetingReference: string;
+        meetingTypeId: string;
+        meetingUrl: string;
+        meetingVenueId: string;
+        parentMeetingId: string;
+        projectId: string;
+        startTime: string;
+        title: string;
+    }>(defaultValue);
+    const [updateMeeting, updateMeetingState] = useMutation(UpdateMeetingDocument, {
+        onCompleted: (data) => {
+            reset()
+            refetch();
+            setAddEditManage(false);
+            setAddEditModalVisible(false);
+            Alert.alert("success", "Meeting updated successfully!");
+        },
+        onError: (error) => {
+            Alert.alert("Error", error.message);
+        }
+    });
+    const [createMeeting, createOrganizationState] = useMutation(CreateMeetingDocument, {
+        onCompleted: (data) => {
+            reset()
+            refetch();
+            setAddEditModalVisible(false);
+            Alert.alert("success", "Meeting create successfully!");
+        },
+        onError: (error) => {
+            Alert.alert("Error", error.message);
+        }
+    });
+    useEffect(() => {
+        setValue('title', currentMeeting.title)
+        setValue('startTime', currentMeeting.startTime)
+        setValue('endTime', currentMeeting.endTime)
+        setValue('meetingAgenda', currentMeeting.meetingAgenda)
+        setValue('meetingDate', currentMeeting.meetingDate)
+        setValue('meetingReference', "")
+        setValue('meetingTypeId', currentMeeting.meetingTypeId)
+        setValue('meetingUrl', currentMeeting.meetingUrl)
+        setValue('meetingVenueId', currentMeeting.meetingVenueId)
+        setValue('projectId', currentMeeting.projectId)
+
+    }, [currentMeeting])
+    const onSubmit = (data: any) => {
+        let param = {
+            "title": data.title,
+            "attendees": data.attendees.map((id: number) => Number(id)),
+            "startTime": data.startTime,
+            "endTime": data.endTime,
+            "meetingDate": data.meetingDate,
+            "meetingAgenda": data.meetingAgenda,
+            "meetingReference": "",
+            "meetingUrl": data.meetingUrl,
+            "meetingTypeId": Number(data.meetingTypeId.value),
+            "meetingVenueId": Number(data.meetingVenueId.value),
+            "projectId": Number(data.projectId.value),
+            "uploadDoc": null
+        }
+        console.log(param);
+        addEditManage ?
+            updateMeeting({
+                variables: {
+                    updateMeetingInput: {
+                        "id": data.id,
+                        "title": data.title,
+                        "attendees": data.attendees.map((id: number) => Number(id)),
+                        "startTime": data.startTime,
+                        "endTime": data.endTime,
+                        "meetingDate": data.meetingDate,
+                        "meetingAgenda": data.meetingAgenda,
+                        "meetingReference": "",
+                        "meetingUrl": data.meetingUrl,
+                        "meetingTypeId": Number(data.meetingTypeId.value),
+                        "meetingVenueId": Number(data.meetingVenueId.value),
+                        "projectId": Number(data.projectId.value),
+                        "uploadDoc": null
+                    }
+                },
+            }) :
+            createMeeting({
+                variables: {
+                    data: param
+                },
+            });
+    };
     /// fetch project data
     const { data: projectData, loading: packageLoading, error: packageError, } = useQuery(PaginatedProjectsDocument, {
         variables: {
@@ -123,7 +230,7 @@ const UpcomingMeeting = () => {
     }, [attendeesData]);
 
     /// image picker
-    const [image, setImage] = useState(null);
+    const [image, setImage] = useState<any>(null);
 
     const pickImage = async () => {
         // Ask for permission
@@ -166,7 +273,6 @@ const UpcomingMeeting = () => {
                         <Feather name="plus-square" size={24} color={Colors[theme].text} />
                     </Pressable>
                 </View>
-
                 <FlatList
                     data={filteredData}
                     renderItem={({ item }) => (
@@ -192,6 +298,20 @@ const UpcomingMeeting = () => {
                                             onPress={() => {
                                                 setAddEditManage(true);
                                                 setAddEditModalVisible(true);
+                                                setCurrentMeeting({
+                                                    id: item.id,
+                                                    title: item.title ?? "",
+                                                    startTime: item.startTime,
+                                                    endTime: item.endTime,
+                                                    meetingAgenda: item.meetingAgenda ?? "",
+                                                    meetingReference: item.meetingReference ?? "",
+                                                    projectId: `${item.projectId}`,
+                                                    meetingDate: item.meetingDate,
+                                                    meetingVenueId: `${item.meetingVenueId}`,
+                                                    meetingTypeId: `${item.meetingTypeId}`,
+                                                    meetingUrl: `${item.meetingUrl}`,
+                                                    parentMeetingId: `${item.parentMeetingId}`,
+                                                })
                                             }}
                                         />
                                         <View style={{ width: 5 }}></View>
@@ -298,7 +418,7 @@ const UpcomingMeeting = () => {
                         </View>
                     </View>
                 </View>
-            </Modal>
+             </Modal>
             {/* create and edit modal */}
             <Modal
                 animationType="fade"
@@ -520,15 +640,14 @@ const UpcomingMeeting = () => {
                                 }}
                             />
 
-
-                            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center',margin : 10 }}>
+                            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', margin: 10 }}>
                                 <Button title="Pick an image from gallery" onPress={pickImage} />
                                 {image && <Image source={{ uri: image }} style={{ width: 200, height: 200, marginTop: 20 }} />}
                             </View>
                             <CustomButton
                                 title="Submit"
                                 onPress={() => {
-                                    // handleSubmit(onSubmit)();
+                                    handleSubmit(onSubmit)();
                                 }}
                                 style={{
                                     backgroundColor: Colors[theme].background,

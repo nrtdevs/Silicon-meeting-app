@@ -165,3 +165,14 @@ query GetUpcomingMeetings($listInputDto: ListInputDTO!) {
     }
   }
 }
+
+query GetMeetingDashboard($filters: DashboardFilters) {
+  getMeetingDashboard(filters: $filters) {
+    totalMeetings
+    activeMeetings
+    inactiveMeetings
+    upComingMeeting
+    completedMeeting
+    todayMeeting
+  }
+}

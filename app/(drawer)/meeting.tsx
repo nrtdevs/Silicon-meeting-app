@@ -15,8 +15,9 @@ import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { Entypo, Feather, Fontisto, MaterialIcons } from '@expo/vector-icons';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { View, Pressable, Alert, Modal, FlatList, ScrollView } from 'react-native';
+import { View, Pressable, Alert, Modal, FlatList, ScrollView, Image, Button } from 'react-native';
 import { ms, s, ScaledSheet, vs } from 'react-native-size-matters';
+import * as ImagePicker from 'expo-image-picker';
 
 const defaultValue = {
     endTime: '',
@@ -263,6 +264,29 @@ const MeetingScreen = () => {
     const filteredData = data?.paginatedMeeting?.data?.filter((item) =>
         item?.title?.toLowerCase().includes(searchQuery.toLowerCase())
     );
+    /// image picker
+    const [image, setImage] = useState<any>(null);
+
+    const pickImage = async () => {
+        // Ask for permission
+        const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (permissionResult.granted === false) {
+            alert("Permission to access camera roll is required!");
+            return;
+        }
+
+        // Pick the image
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+        });
+
+        if (!result.canceled) {
+            setImage(result.assets[0].uri);
+        }
+    };
     return (
         <CustomHeader>
             <ThemedView style={styles.contentContainer}>
@@ -653,6 +677,20 @@ const MeetingScreen = () => {
                                     },
                                 }}
                             />
+
+                            
+                            <CustomButton
+                                title="Upload Image"
+                                onPress={() => {
+                                    pickImage();
+                                }}
+                                style={{
+                                    backgroundColor: "#E5E5E5",
+                                    marginTop: vs(20),
+                                }}
+                            />
+                                {image && <Image source={{ uri: image }} style={{ width: "100%", height: 200, marginTop: 20,justifyContent : "center" ,alignSelf : "center"}} />}
+                           
                             <CustomButton
                                 title="Submit"
                                 onPress={() => {
